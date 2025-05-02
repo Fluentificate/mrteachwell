@@ -1,0 +1,20 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm \
+    && wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["python", "bot.py"]
